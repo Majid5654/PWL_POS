@@ -34,10 +34,13 @@ use Illuminate\Support\Facades\Route;
 // Route::get('user/hapus/{id}',[UserController::class, 'hapus']);
 // Route::get('/', [WelcomeController::class, 'index']);
 
+
+Route::middleware(['auth'])->group(function () {
 Route::get('/', [WelcomeController::class, 'index']);
 
 Route::group(['prefix' => 'user'], function () {
-    Route::get('/', [UserController::class, 'index']);
+    //Route::get('/', [UserController::class, 'index']);
+    Route::get('/', [UserController::class, 'index'])->middleware('authorize:ADM,MNG');
     Route::get('/user.ajax', [UserController::class, 'store_ajax'])->name('user.ajax');
     Route::post('/list', [UserController::class, 'list']);
     Route::get('/create', [UserController::class, 'create']);
@@ -59,7 +62,8 @@ Route::group(['prefix' => 'user'], function () {
 });
 
 Route::group(['prefix' => 'level'], function () {
-    Route::get('/', [LevelController::class, 'index']);
+    //Route::get('/', [LevelController::class, 'index']);
+    Route::get('/', [levelController::class, 'index'])->middleware('authorize:ADM');
     Route::post('/list', [LevelController::class, 'list']);
     Route::get('/create', [LevelController::class, 'create']);
     Route::post('/', [LevelController::class, 'store']);
@@ -77,7 +81,8 @@ Route::group(['prefix' => 'level'], function () {
     
 });
 Route::group(['prefix' => 'kategori'], function () {
-    Route::get('/', [KategoriController::class, 'index']);
+    //Route::get('/', [KategoriController::class, 'index']);
+    Route::get('/', [KategoriController::class, 'index'])->middleware('authorize:MNG,CUS');
     Route::post('/list', [KategoriController::class, 'list']);
     Route::get('/create', [KategoriController::class, 'create']);
     Route::post('/', [KategoriController::class, 'store']);
@@ -95,7 +100,8 @@ Route::group(['prefix' => 'kategori'], function () {
 });
 
 Route::group(['prefix' => 'barang'], function () {
-    Route::get('/', [BarangController::class, 'index']);
+    //Route::get('/', [BarangController::class, 'index']);
+    Route::get('/', [BarangController::class, 'index'])->middleware('authorize:CUS');
     Route::post('/list', [BarangController::class, 'list']);
     Route::get('/create', [BarangController::class, 'create']);
     Route::post('/', [BarangController::class, 'store']);
@@ -121,10 +127,11 @@ Route::group(['prefix' => 'barang'], function () {
     //Route::delete('/{id}/delete', [StockController::class, 'delete'])->name('stocks.delete');
     //Route::post('/store', [StockController::class, 'store'])->name('stocks.store');
 //});
-use App\Http\Controllers\StokController;
+//use App\Http\Controllers\StokController;
 
 
-Route::get('/stok', [StockController::class, 'index'])->name('stok.index');
+Route::get('/stok', [StockController::class, 'index'])->middleware('authorize:CUS');
+//Route::get('/stok', [StockController::class, 'index'])->name('stok.index');
 Route::post('/stok/list', [StockController::class, 'list'])->name('stok.list'); // Pastikan ini POST
 Route::post('/stok/store', [StockController::class, 'store']);
 Route::post('/stok/update/{id}', [StockController::class, 'update']);
@@ -138,9 +145,11 @@ Route::put('/stok/update/{id}', [StockController::class, 'update'])->name('stok.
 Route::get('/{id}/delete_ajax', [StockController::class, 'confirm_ajax']);
 Route::delete('/{id}/delete_ajax', [StockController::class, 'destroy']);
 
-
-Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+Route::get('/transaksi', [TransaksiController::class, 'index'])->middleware('authorize:CUS,ADM,MNG');
+//Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
 Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
 Route::get('/transaksi/create', [TransaksiController::class, 'create'])->name('transaksi.create');
 Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
 Route::resource('/transaksi', TransaksiController::class);
+});
+require __DIR__ . '/auth.php';

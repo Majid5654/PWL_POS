@@ -70,6 +70,10 @@
                   <a href="{{ url('/sales') }}" class="nav-link {{ ($activeMenu == 'sales') ? 'active' : '' }}">
                       <i class="nav-icon fas fa-cash-register"></i>
                       <p>Sales Transactions</p>
+             <li class="nav-item">
+                        <a href="{{ route('logout') }}" class="nav-link {{ $activeMenu == 'sales' ? 'active' : '' }}">
+                            <i class="nav-icon fa fa-sign-out-alt"></i>
+                            <p>Logout</p>
                   </a>
               </li>
           </ul>
