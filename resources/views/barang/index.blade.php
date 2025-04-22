@@ -4,8 +4,12 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title ?? 'Default Title' }}</h3>
             <div class="card-tools">
+                <button onclick="modalImport('{{ url('barang/import') }}')" class="btn btn-info">Import Goods</button>
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('barang/create') }}">Tambah</a>
                 <button onclick="modalAction('{{ url('/barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+                <a href="{{ url('/barang/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Barang (XLSX)</a>
+                <a href="{{ url('/barang/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file
+                    pdf"></i> Export Barang PDF</a> 
             </div>
         </div>
         <div class="card-body">
@@ -44,25 +48,35 @@
     </div>
     <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
         data-keyboard="false" data-width="75%" aria-hidden="true"></div>
+    <!-- Modal Import Barang -->
+<div id="modalImportBarang" class="modal fade animate bounce" tabindex="-1" role="dialog" data-backdrop="static"
+    data-keyboard="false" data-width="50%" aria-hidden="true"></div>
 @endsection
 @push('css')
 @endpush
 @push('js')
     <script>
         function modalAction(url = '') {
-            $('#myModal').load(url, function(){
-                $('#myModal').modal('show');
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show')
             });
         }
+        function modalImport(url = '') {
+    $('#modalImportBarang').load(url, function () {
+        $('#modalImportBarang').modal('show');
+    });
+}
+
+
         var dataBarang;
-        $(document).ready(function() {
+        $(document).ready(function () {
             dataBarang = $('#table_barang').DataTable({
                 serverSide: true,
                 ajax: {
                     "url": "{{ url('barang/list') }}",
                     "dataType": "json",
                     "type": "POST",
-                    "data": function(d) {
+                    "data": function (d) {
                         d.kategori_id = $('#kategori_id').val();
                     }
                 },
@@ -103,7 +117,7 @@
                     searchable: false
                 }]
             });
-            $('#kategori_id').on('change', function() {
+            $('#kategori_id').on('change', function () {
                 dataBarang.ajax.reload();
             });
         });

@@ -33,10 +33,14 @@ use Illuminate\Support\Facades\Route;
 // Route::put('/user/ubah_simpan/{id}',[UserController::class, 'ubah_simpan']);
 // Route::get('user/hapus/{id}',[UserController::class, 'hapus']);
 // Route::get('/', [WelcomeController::class, 'index']);
-
-
+Route::get('barang/import', [BarangController::class, 'import']); // ajax form upload excel
+Route::post('barang/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
+Route::get('/barang/export_excel', [BarangController::class, 'export_excel']);
+Route::get('barang/export_pdf', [BarangController::class, 'export_pdf']); // export pdf
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [WelcomeController::class, 'index']);
+Route::post('/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
+
 
 Route::group(['prefix' => 'user'], function () {
     //Route::get('/', [UserController::class, 'index']);
@@ -99,7 +103,7 @@ Route::group(['prefix' => 'kategori'], function () {
     Route::delete('/{id}/delete_ajax', [KategoriController::class, 'destroy']);
 });
 
-Route::group(['prefix' => 'barang'], function () {
+Route::prefix('barang')->group(function () {
     //Route::get('/', [BarangController::class, 'index']);
     Route::get('/', [BarangController::class, 'index'])->middleware('authorize:CUS');
     Route::post('/list', [BarangController::class, 'list']);
@@ -116,6 +120,11 @@ Route::group(['prefix' => 'barang'], function () {
     Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);
     Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
     Route::delete('/{id}/delete_ajax', [BarangController::class, 'destroy']);
+
+    // Route::get('/import', [BarangController::class, 'import']); // ajax form upload excel
+    // Route::post('/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
+    // Route::get('/export_excel', [BarangController::class, 'export_excel']); // export excel
+    //Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
 });
 //Route::prefix('/stocks')->group(function () {
   //  Route::get('', [StockController::class, 'page'])->name('stock.page');
@@ -145,11 +154,21 @@ Route::put('/stok/update/{id}', [StockController::class, 'update'])->name('stok.
 Route::get('/{id}/delete_ajax', [StockController::class, 'confirm_ajax']);
 Route::delete('/{id}/delete_ajax', [StockController::class, 'destroy']);
 
-Route::get('/transaksi', [TransaksiController::class, 'index'])->middleware('authorize:CUS,ADM,MNG');
-//Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
-Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
-Route::get('/transaksi/create', [TransaksiController::class, 'create'])->name('transaksi.create');
-Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
-Route::resource('/transaksi', TransaksiController::class);
+
+
+Route::middleware(['authorize:CUS,ADM,MNG'])->group(function () {
+    Route::get('/transaksi', [TransaksiController::class, 'index']);
+    Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
+    //Route::get('/transaksi/create', [TransaksiController::class, 'create']);
+    Route::get('/transaksi/create',[TransaksiController::class,'create']);
+    Route::post('/transaksi', [TransaksiController::class, 'store']);
+    Route::get('/transaksi/{id}/edit', [TransaksiController::class, 'edit']);
+    Route::put('/transaksi/{id}', [TransaksiController::class, 'update']);
+    Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
+    Route::delete('/transaksi/show', [TransaksiController::class, 'show_ajax']);
+});
+
+Route::post('/profile/upload', [App\Http\Controllers\ProfileController::class, 'upload'])->name('profile.upload');
+
 });
 require __DIR__ . '/auth.php';

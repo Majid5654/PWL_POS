@@ -1,6 +1,10 @@
 @extends('layout.template')
 
 @section('content')
+<a href="{{ url('/transaksi') }}" class="nav-link {{ ($activeMenu == 'sales') ? 'active' : '' }}">
+    <i class="nav-icon fas fa-cash-register"></i>
+    <p>Sales Transactions</p>
+</a>
 <div class="container mx-auto px-6 py-12">
     <h1 class="text-3xl font-bold text-blue-900 mb-6">Add New Transaction</h1>
 
