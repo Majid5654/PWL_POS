@@ -5,9 +5,32 @@ namespace App\Models;
 use App\Http\Controllers\LevelController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserModel extends Model
+class UserModel extends Authenticatable implements JWTSubject
+{
+    protected $fillable = ['username', 'email', 'password', 'level_id','nama'];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    protected $table = 'm_user';
+    protected $primaryKey = 'user_id';
+    public function level()
+    {
+        return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
+    }
+}
+/*class UserModel extends Model
 {
     use HasFactory;
 
@@ -28,3 +51,4 @@ class UserModel extends Model
         return $this->level->level_kode == $role;
     }
 }
+*/
